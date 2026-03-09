@@ -15,12 +15,22 @@ class StatusChip extends StatelessWidget {
 
   Color get _color {
     switch (status.toLowerCase()) {
+      case 'pending':
+        return AppTheme.pending;
+      case 'in_progress':
+        return const Color(0xFF6366F1);
+      case 'review':
+        return const Color(0xFF8B5CF6);
+      case 'done':
+        return AppTheme.paid;
+      case 'delivered':
+        return const Color(0xFF06B6D4);
+      // Legacy statuses
       case 'paid':
         return AppTheme.paid;
       case 'invoiced':
         return AppTheme.invoiced;
-      case 'pending':
-        return AppTheme.pending;
+      // Project statuses
       case 'active':
         return AppTheme.success;
       case 'completed':
@@ -34,12 +44,20 @@ class StatusChip extends StatelessWidget {
 
   IconData get _icon {
     switch (status.toLowerCase()) {
+      case 'pending':
+        return Icons.schedule_rounded;
+      case 'in_progress':
+        return Icons.construction_rounded;
+      case 'review':
+        return Icons.visibility_rounded;
+      case 'done':
+        return Icons.check_circle_rounded;
+      case 'delivered':
+        return Icons.local_shipping_rounded;
       case 'paid':
         return Icons.check_circle_rounded;
       case 'invoiced':
         return Icons.receipt_long_rounded;
-      case 'pending':
-        return Icons.schedule_rounded;
       case 'active':
         return Icons.play_circle_rounded;
       case 'completed':
@@ -52,7 +70,14 @@ class StatusChip extends StatelessWidget {
   }
 
   String get _label {
-    return status[0].toUpperCase() + status.substring(1);
+    switch (status.toLowerCase()) {
+      case 'in_progress':
+        return 'In Progress';
+      case 'on-hold':
+        return 'On Hold';
+      default:
+        return status[0].toUpperCase() + status.substring(1);
+    }
   }
 
   @override
@@ -63,9 +88,9 @@ class StatusChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: _color.withOpacity(0.12),
+          color: _color.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: _color.withOpacity(0.3)),
+          border: Border.all(color: _color.withValues(alpha: 0.3)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

@@ -228,15 +228,28 @@ class DashboardScreen extends ConsumerWidget {
       children: [
         SummaryCard(
           icon: Icons.account_balance_wallet_rounded,
-          title: 'Unpaid Balance',
-          value: fmt.format(summary.totalUnpaid),
-          accentColor: AppTheme.warning,
+          title: 'Outstanding',
+          value: fmt.format(summary.totalOutstanding),
+          accentColor:
+              summary.totalOutstanding > 0 ? AppTheme.warning : AppTheme.paid,
         ),
         SummaryCard(
           icon: Icons.trending_up_rounded,
           title: 'This Month',
-          value: fmt.format(summary.thisMonthEarnings),
+          value: fmt.format(summary.thisMonthCollections),
           accentColor: AppTheme.success,
+        ),
+        SummaryCard(
+          icon: Icons.construction_rounded,
+          title: 'In Progress',
+          value: '${summary.inProgressTasks}',
+          accentColor: const Color(0xFF6366F1),
+        ),
+        SummaryCard(
+          icon: Icons.check_circle_outline_rounded,
+          title: 'Done',
+          value: '${summary.doneTasks}',
+          accentColor: AppTheme.paid,
         ),
         SummaryCard(
           icon: Icons.rocket_launch_rounded,
@@ -246,7 +259,7 @@ class DashboardScreen extends ConsumerWidget {
         ),
         SummaryCard(
           icon: Icons.people_rounded,
-          title: 'Total Clients',
+          title: 'Clients',
           value: '${summary.totalClients}',
           accentColor: const Color(0xFF9F7AEA),
         ),

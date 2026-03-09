@@ -1,0 +1,162 @@
+{
+  "version": "1.0.0",
+  "exportDate": "2026-03-09T02:12:00.000Z",
+  "clients": [
+    {
+      "id": "client_mostafa_001",
+      "name": "مصطفي (Mostafa)",
+      "contact": "WhatsApp",
+      "notes": "شركة لونج تايم للصناعات الكهربائية — / Olive — Car Controller — WhatsApp AI Bot",
+      "createdAt": "2026-01-12T22:45:00.000Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj_longtime_pos",
+      "clientId": "client_mostafa_001",
+      "name": "Long Time POS System",
+      "description": "تطبيق Desktop/Mobile لنقاط البيع الخاصة بشركة لونج تايم",
+      "status": "active",
+      "currency": "EGP",
+      "createdAt": "2026-01-12T22:45:00.000Z"
+    },
+    {
+      "id": "proj_vizbrief",
+      "clientId": "client_mostafa_001",
+      "name": "VizBrief Meeting Bot",
+      "description": "تحليل اجتماعات جوجل ميت تلقائياً",
+      "status": "completed",
+      "currency": "EGP",
+      "createdAt": "2026-01-17T20:00:00.000Z"
+    },
+    {
+      "id": "proj_olive",
+      "clientId": "client_mostafa_001",
+      "name": "Olive POS & E-commerce",
+      "description": "نظام POS مبني على LongTime + موقع إلكتروني للعملاء مع ربط Paymob",
+      "status": "active",
+      "currency": "EGP",
+      "createdAt": "2026-03-05T20:00:00.000Z"
+    },
+    {
+      "id": "proj_whatsapp_ai",
+      "clientId": "client_mostafa_001",
+      "name": "WhatsApp AI Agent Bot",
+      "description": "بوت واتساب بالذكاء الاصطناعي مربوط بداتابيز النظام للرد على العملاء والمندوبين",
+      "status": "active",
+      "currency": "EGP",
+      "createdAt": "2026-03-05T20:00:00.000Z"
+    },
+    {
+      "id": "proj_car_controller",
+      "clientId": "client_mostafa_001",
+      "name": "Car Controller PCB",
+      "description": "برمجة شفرة السيارة والربط بلوحة التحكم للسيارات",
+      "status": "active",
+      "currency": "EGP",
+      "createdAt": "2026-03-06T20:00:00.000Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task_sa_mig_01",
+      "projectId": "proj_longtime_pos",
+      "title": "Sahl DB Reverse Engineering",
+      "description": "سحب وتحليل داتابيز برنامج سهل (sahl11_backup.sql)",
+      "cost": 0,
+      "date": "2026-02-08T00:00:00.000Z",
+      "status": "paid",
+      "createdAt": "2026-02-08T23:11:00.000Z"
+    },
+    {
+      "id": "task_sa_mig_02",
+      "projectId": "proj_longtime_pos",
+      "title": "Data Migration from Sahl",
+      "description": "استيراد الفواتير وحسابات العملاء من برنامج سهل إلى محلي",
+      "cost": 0,
+      "date": "2026-02-09T00:00:00.000Z",
+      "status": "paid",
+      "createdAt": "2026-02-09T14:50:00.000Z"
+    },
+    {
+      "id": "task_lt_01",
+      "projectId": "proj_longtime_pos",
+      "title": "V4.9.0 Sync Fixes",
+      "description": "إصلاح المزامنة، وتطبيق رسالة تأكيد إعادة ضبط المصنع، والفلتر",
+      "cost": 0,
+      "date": "2026-02-12T00:00:00.000Z",
+      "status": "paid",
+      "createdAt": "2026-02-12T00:00:00.000Z"
+    },
+    {
+      "id": "task_lt_02",
+      "projectId": "proj_longtime_pos",
+      "title": "V5.0.0 & V5.1.0 Fixes",
+      "description": "إصلاح الضريبة، البحث في الـ POS، وحفظ الحسابات"،
+      "cost": 0,
+      "date": "2026-02-13T00:00:00.000Z",
+      "status": "paid",
+      "createdAt": "2026-02-13T15:00:00.000Z"
+    },
+    {
+      "id": "task_lt_03",
+      "projectId": "proj_longtime_pos",
+      "title": "Google Play Submission",
+      "description": "رفع نسخة النظام الجديدة على Play Store والتسجيل كمطور",
+      "cost": 500,
+      "date": "2026-03-07T00:00:00.000Z",
+      "status": "paid",
+      "createdAt": "2026-03-07T12:00:00.000Z"
+    },
+    {
+      "id": "task_olv_01",
+      "projectId": "proj_olive",
+      "title": "Olive POS Formats",
+      "description": "ضبط فاتورة عرض 80مم وإضافة الكيو آر والبلوتوث",
+      "cost": 0,
+      "date": "2026-03-08T00:00:00.000Z",
+      "status": "pending",
+      "createdAt": "2026-03-08T03:30:00.000Z"
+    },
+    {
+      "id": "task_olv_02",
+      "projectId": "proj_olive",
+      "title": "Website Integration (Olive)",
+      "description": "ربط المخزون بسلة المشتريات وإرسال أوردرات",
+      "cost": 0,
+      "date": "2026-03-08T00:00:00.000Z",
+      "status": "pending",
+      "createdAt": "2026-03-08T03:30:00.000Z"
+    },
+    {
+      "id": "task_olv_03",
+      "projectId": "proj_olive",
+      "title": "Paymob Integration",
+      "description": "بوابة دفع بي موب للطلبات على oliveegy.com",
+      "cost": 0,
+      "date": "2026-03-08T00:00:00.000Z",
+      "status": "pending",
+      "createdAt": "2026-03-08T03:30:00.000Z"
+    },
+    {
+      "id": "task_bot_01",
+      "projectId": "proj_whatsapp_ai",
+      "title": "AI Database Integration",
+      "description": "بناء الـ Tools لربط الذكاء الاصطناعي مع الداتابيز",
+      "cost": 0,
+      "date": "2026-03-08T00:00:00.000Z",
+      "status": "pending",
+      "createdAt": "2026-03-08T03:40:00.000Z"
+    },
+    {
+      "id": "task_car_01",
+      "projectId": "proj_car_controller",
+      "title": "Car Radio Code Parsing",
+      "description": "تشفير الريموت وتخزين وفك شفرات حساسات السيارة",
+      "cost": 0,
+      "date": "2026-03-08T00:00:00.000Z",
+      "status": "pending",
+      "createdAt": "2026-03-08T22:00:00.000Z"
+    }
+  ]
+}

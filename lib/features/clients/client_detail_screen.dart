@@ -24,6 +24,8 @@ class ClientDetailScreen extends ConsumerWidget {
         .where((p) => p.clientId == clientId)
         .toList();
     final tasks = ref.watch(allTasksProvider);
+    final payments = ref.watch(allPaymentsProvider);
+    final invoices = ref.watch(allInvoicesProvider);
     final currency = ref.watch(currencyProvider);
     final fmt =
         NumberFormat.currency(symbol: currency == 'EGP' ? 'EGP ' : '\$');
@@ -35,15 +37,18 @@ class ClientDetailScreen extends ConsumerWidget {
       );
     }
 
-    // Calculate client-level financials
+    // Calculate client-level financials from invoices & payments
     final clientTasks = tasks.where((t) {
       return projects.any((p) => p.id == t.projectId);
     }).toList();
     final totalCost = clientTasks.fold(0.0, (sum, t) => sum + t.cost);
-    final totalPaid = clientTasks
-        .where((t) => t.status == 'paid')
-        .fold(0.0, (sum, t) => sum + t.cost);
-    final totalUnpaid = totalCost - totalPaid;
+    final totalBilled = invoices
+        .where((i) => i.clientId == clientId && i.status != 'cancelled')
+        .fold(0.0, (sum, i) => sum + i.total);
+    final totalPaid = payments
+        .where((p) => p.clientId == clientId)
+        .fold(0.0, (sum, p) => sum + p.amount);
+    final totalUnpaid = totalBilled - totalPaid;
 
     return Scaffold(
       body: CustomScrollView(
@@ -141,12 +146,57 @@ class ClientDetailScreen extends ConsumerWidget {
                 children: [
                   _financialItem('Total', fmt.format(totalCost), Colors.white),
                   _divider(),
+                  _financialItem(
+                      'Billed', fmt.format(totalBilled), Colors.amberAccent),
+                  _divider(),
                   _financialItem('Paid', fmt.format(totalPaid), AppTheme.paid),
                   _divider(),
                   _financialItem(
-                    'Unpaid',
+                    'Balance',
                     fmt.format(totalUnpaid),
                     totalUnpaid > 0 ? AppTheme.warning : AppTheme.paid,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Quick action buttons
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _actionButton(
+                      context,
+                      icon: Icons.receipt_long_rounded,
+                      label: 'فاتورة',
+                      color: Colors.amberAccent,
+                      onTap: () =>
+                          context.push('/invoices/new?clientId=$clientId'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _actionButton(
+                      context,
+                      icon: Icons.payments_rounded,
+                      label: 'دفعة',
+                      color: Colors.greenAccent,
+                      onTap: () =>
+                          context.push('/payments/new?clientId=$clientId'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _actionButton(
+                      context,
+                      icon: Icons.account_balance_wallet_rounded,
+                      label: 'كشف حساب',
+                      color: const Color(0xFF06B6D4),
+                      onTap: () => context.push('/clients/$clientId/statement'),
+                    ),
                   ),
                 ],
               ),
@@ -345,7 +395,38 @@ class ClientDetailScreen extends ConsumerWidget {
     return Container(
       width: 1,
       height: 36,
-      color: Colors.white.withOpacity(0.08),
+      color: Colors.white.withValues(alpha: 0.08),
+    );
+  }
+
+  Widget _actionButton(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 22),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                  fontSize: 11, color: color, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

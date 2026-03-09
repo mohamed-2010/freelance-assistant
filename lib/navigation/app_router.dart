@@ -5,9 +5,14 @@ import '../features/dashboard/dashboard_screen.dart';
 import '../features/clients/clients_list_screen.dart';
 import '../features/clients/client_detail_screen.dart';
 import '../features/clients/client_form_screen.dart';
+import '../features/clients/account_statement_screen.dart';
 import '../features/projects/project_detail_screen.dart';
 import '../features/projects/project_form_screen.dart';
 import '../features/tasks/task_form_screen.dart';
+import '../features/payments/payments_list_screen.dart';
+import '../features/payments/payment_form_screen.dart';
+import '../features/invoices/invoices_list_screen.dart';
+import '../features/invoices/invoice_create_screen.dart';
 import '../features/reports/reports_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../widgets/shell_scaffold.dart';
@@ -36,6 +41,12 @@ final appRouter = GoRouter(
           ),
         ),
         GoRoute(
+          path: '/payments',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: PaymentsListScreen(),
+          ),
+        ),
+        GoRoute(
           path: '/reports',
           pageBuilder: (context, state) => const NoTransitionPage(
             child: ReportsScreen(),
@@ -54,6 +65,13 @@ final appRouter = GoRouter(
       path: '/clients/:id',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => ClientDetailScreen(
+        clientId: state.pathParameters['id']!,
+      ),
+    ),
+    GoRoute(
+      path: '/clients/:id/statement',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => AccountStatementScreen(
         clientId: state.pathParameters['id']!,
       ),
     ),
@@ -94,6 +112,29 @@ final appRouter = GoRouter(
           taskId: taskId,
           projectId: projectId,
         );
+      },
+    ),
+    // Payment routes
+    GoRoute(
+      path: '/payments/new',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) {
+        final clientId = state.uri.queryParameters['clientId'];
+        return PaymentFormScreen(clientId: clientId);
+      },
+    ),
+    // Invoice routes
+    GoRoute(
+      path: '/invoices',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => const InvoicesListScreen(),
+    ),
+    GoRoute(
+      path: '/invoices/new',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) {
+        final clientId = state.uri.queryParameters['clientId'];
+        return InvoiceCreateScreen(clientId: clientId);
       },
     ),
   ],

@@ -9,8 +9,9 @@ class ShellScaffold extends StatelessWidget {
   static int _currentIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
     if (location.startsWith('/clients')) return 1;
-    if (location.startsWith('/reports')) return 2;
-    if (location.startsWith('/settings')) return 3;
+    if (location.startsWith('/payments')) return 2;
+    if (location.startsWith('/reports')) return 3;
+    if (location.startsWith('/settings')) return 4;
     return 0;
   }
 
@@ -29,9 +30,12 @@ class ShellScaffold extends StatelessWidget {
               context.go('/clients');
               break;
             case 2:
-              context.go('/reports');
+              context.go('/payments');
               break;
             case 3:
+              context.go('/reports');
+              break;
+            case 4:
               context.go('/settings');
               break;
           }
@@ -46,6 +50,11 @@ class ShellScaffold extends StatelessWidget {
             icon: Icon(Icons.people_outline_rounded),
             selectedIcon: Icon(Icons.people_rounded),
             label: 'Clients',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.payments_outlined),
+            selectedIcon: Icon(Icons.payments_rounded),
+            label: 'Payments',
           ),
           NavigationDestination(
             icon: Icon(Icons.analytics_outlined),

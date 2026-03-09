@@ -23,10 +23,19 @@ class Task extends HiveObject {
   DateTime date;
 
   @HiveField(6)
-  String status; // pending, invoiced, paid
+  String status; // pending, in_progress, review, done, delivered
 
   @HiveField(7)
   final DateTime createdAt;
+
+  @HiveField(8)
+  String priority; // low, medium, high, urgent
+
+  @HiveField(9)
+  DateTime? completedAt;
+
+  @HiveField(10)
+  DateTime? deliveredAt;
 
   Task({
     required this.id,
@@ -37,6 +46,9 @@ class Task extends HiveObject {
     required this.date,
     this.status = 'pending',
     required this.createdAt,
+    this.priority = 'medium',
+    this.completedAt,
+    this.deliveredAt,
   });
 
   Task copyWith({
@@ -45,6 +57,9 @@ class Task extends HiveObject {
     double? cost,
     DateTime? date,
     String? status,
+    String? priority,
+    DateTime? completedAt,
+    DateTime? deliveredAt,
   }) {
     return Task(
       id: id,
@@ -55,6 +70,9 @@ class Task extends HiveObject {
       date: date ?? this.date,
       status: status ?? this.status,
       createdAt: createdAt,
+      priority: priority ?? this.priority,
+      completedAt: completedAt ?? this.completedAt,
+      deliveredAt: deliveredAt ?? this.deliveredAt,
     );
   }
 
@@ -67,16 +85,33 @@ class Task extends HiveObject {
         'date': date.toIso8601String(),
         'status': status,
         'createdAt': createdAt.toIso8601String(),
+        'priority': priority,
+        'completedAt': completedAt?.toIso8601String(),
+        'deliveredAt': deliveredAt?.toIso8601String(),
       };
 
-  factory Task.fromJson(Map<String, dynamic> json) => Task(
-        id: json['id'] as String,
-        projectId: json['projectId'] as String,
-        title: json['title'] as String,
-        description: json['description'] as String? ?? '',
-        cost: (json['cost'] as num).toDouble(),
-        date: DateTime.parse(json['date'] as String),
-        status: json['status'] as String? ?? 'pending',
-        createdAt: DateTime.parse(json['createdAt'] as String),
-      );
+  factory Task.fromJson(Map<String, dynamic> json) {
+    // Migrate old statuses
+    String rawStatus = json['status'] as String? ?? 'pending';
+    if (rawStatus == 'invoiced') rawStatus = 'done';
+    if (rawStatus == 'paid') rawStatus = 'delivered';
+
+    return Task(
+      id: json['id'] as String,
+      projectId: json['projectId'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String? ?? '',
+      cost: (json['cost'] as num).toDouble(),
+      date: DateTime.parse(json['date'] as String),
+      status: rawStatus,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      priority: json['priority'] as String? ?? 'medium',
+      completedAt: json['completedAt'] != null
+          ? DateTime.parse(json['completedAt'] as String)
+          : null,
+      deliveredAt: json['deliveredAt'] != null
+          ? DateTime.parse(json['deliveredAt'] as String)
+          : null,
+    );
+  }
 }

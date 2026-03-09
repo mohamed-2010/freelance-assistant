@@ -1,49 +1,52 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'project.dart';
+part of 'payment.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ProjectAdapter extends TypeAdapter<Project> {
+class PaymentAdapter extends TypeAdapter<Payment> {
   @override
-  final int typeId = 1;
+  final int typeId = 3;
 
   @override
-  Project read(BinaryReader reader) {
+  Payment read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Project(
+    return Payment(
       id: fields[0] as String,
       clientId: fields[1] as String,
-      name: fields[2] as String,
-      description: fields[3] as String,
-      status: fields[4] as String,
-      currency: fields[5] as String,
-      createdAt: fields[6] as DateTime,
+      projectId: fields[2] as String?,
+      amount: fields[3] as double,
+      date: fields[4] as DateTime,
+      method: fields[5] as String,
+      notes: fields[6] as String,
+      createdAt: fields[7] as DateTime,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Project obj) {
+  void write(BinaryWriter writer, Payment obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.clientId)
       ..writeByte(2)
-      ..write(obj.name)
+      ..write(obj.projectId)
       ..writeByte(3)
-      ..write(obj.description)
+      ..write(obj.amount)
       ..writeByte(4)
-      ..write(obj.status)
+      ..write(obj.date)
       ..writeByte(5)
-      ..write(obj.currency)
+      ..write(obj.method)
       ..writeByte(6)
+      ..write(obj.notes)
+      ..writeByte(7)
       ..write(obj.createdAt);
   }
 
@@ -53,7 +56,7 @@ class ProjectAdapter extends TypeAdapter<Project> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ProjectAdapter &&
+      other is PaymentAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
