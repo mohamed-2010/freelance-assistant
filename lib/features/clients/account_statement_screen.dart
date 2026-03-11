@@ -286,6 +286,5 @@ class _StatementEntry {
     required this.debit,
     required this.credit,
     required this.type,
-    this.balance = 0,
-  });
+  }) : balance = 0;
 }
