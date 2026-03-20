@@ -21,7 +21,7 @@ class FreelanceAssistantApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Freelance Assistant',
+      title: 'كود بالعقل',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       routerConfig: appRouter,

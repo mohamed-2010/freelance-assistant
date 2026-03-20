@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
+import '../../services/pdf_service.dart';
 
 class AccountStatementScreen extends ConsumerWidget {
   final String clientId;
@@ -67,6 +69,12 @@ class AccountStatementScreen extends ConsumerWidget {
           decoration: BoxDecoration(gradient: AppTheme.primaryGradient),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf_rounded),
+            tooltip: 'تصدير PDF',
+            onPressed: () => _exportPdf(
+                context, client, entries, totalDebit, totalCredit, runningBalance, currency),
+          ),
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: () => _shareStatement(
@@ -238,6 +246,49 @@ class AccountStatementScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  void _exportPdf(
+      BuildContext context,
+      client,
+      List<_StatementEntry> entries,
+      double totalDebit,
+      double totalCredit,
+      double balance,
+      String currency) async {
+    try {
+      final pdfEntries = entries
+          .map((e) => StatementEntry(
+                date: e.date,
+                description: e.description,
+                debit: e.debit,
+                credit: e.credit,
+                balance: e.balance,
+              ))
+          .toList();
+
+      final pdfBytes = await PdfService.generateStatementPdf(
+        client: client,
+        entries: pdfEntries,
+        totalDebit: totalDebit,
+        totalCredit: totalCredit,
+        balance: balance,
+        currency: currency,
+      );
+
+      if (!context.mounted) return;
+
+      await Printing.sharePdf(
+        bytes: pdfBytes,
+        filename: 'كشف_حساب_${client.name}.pdf',
+      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('❌ فشل التصدير: $e')),
+        );
+      }
+    }
   }
 
   void _shareStatement(

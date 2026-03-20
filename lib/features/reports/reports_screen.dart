@@ -61,7 +61,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         filtered.sort((a, b) => b.cost.compareTo(a.cost));
         break;
       case 'status':
-        const order = {'pending': 0, 'invoiced': 1, 'paid': 2};
+        const order = {
+          'pending': 0,
+          'in_progress': 1,
+          'review': 2,
+          'done': 3,
+          'delivered': 4,
+        };
         filtered.sort(
             (a, b) => (order[a.status] ?? 0).compareTo(order[b.status] ?? 0));
         break;
@@ -69,7 +75,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
     final totalFiltered = filtered.fold(0.0, (sum, t) => sum + t.cost);
     final unpaidFiltered = filtered
-        .where((t) => t.status != 'paid')
+        .where((t) => t.status != 'delivered')
         .fold(0.0, (sum, t) => sum + t.cost);
 
     return Scaffold(
@@ -195,12 +201,20 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       () => setState(() => _statusFilter = 'pending'),
                       color: AppTheme.pending),
                   const SizedBox(width: 8),
-                  _filterChip('Invoiced', _statusFilter == 'invoiced',
-                      () => setState(() => _statusFilter = 'invoiced'),
+                  _filterChip('In Progress', _statusFilter == 'in_progress',
+                      () => setState(() => _statusFilter = 'in_progress'),
+                      color: Colors.blueAccent),
+                  const SizedBox(width: 8),
+                  _filterChip('Review', _statusFilter == 'review',
+                      () => setState(() => _statusFilter = 'review'),
                       color: AppTheme.invoiced),
                   const SizedBox(width: 8),
-                  _filterChip('Paid', _statusFilter == 'paid',
-                      () => setState(() => _statusFilter = 'paid'),
+                  _filterChip('Done', _statusFilter == 'done',
+                      () => setState(() => _statusFilter = 'done'),
+                      color: Colors.cyan),
+                  const SizedBox(width: 8),
+                  _filterChip('Delivered', _statusFilter == 'delivered',
+                      () => setState(() => _statusFilter = 'delivered'),
                       color: AppTheme.paid),
                 ],
               ),

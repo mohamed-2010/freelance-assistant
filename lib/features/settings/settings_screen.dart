@@ -207,6 +207,8 @@ class SettingsScreen extends ConsumerWidget {
                           ref.read(clientsProvider.notifier).refresh();
                           ref.read(allProjectsProvider.notifier).refresh();
                           ref.read(allTasksProvider.notifier).refresh();
+                          ref.read(allPaymentsProvider.notifier).refresh();
+                          ref.read(allInvoicesProvider.notifier).refresh();
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('✅ Data restored successfully!'),
@@ -246,29 +248,46 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   child: Column(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          gradient: AppTheme.primaryGradient,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: const Icon(
-                          Icons.work_rounded,
-                          color: Colors.white,
-                          size: 28,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          width: 64,
+                          height: 64,
+                          errorBuilder: (_, __, ___) => Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              gradient: AppTheme.primaryGradient,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Icon(
+                              Icons.work_rounded,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 14),
                       Text(
-                        'Freelance Assistant',
+                        'كود بالعقل',
                         style: GoogleFonts.inter(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Freelance Assistant',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                      ),
                       const SizedBox(height: 4),
                       Text(
-                        'Version 1.0.0',
+                        'Version 1.1.0',
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.white.withOpacity(0.4),
@@ -276,7 +295,7 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Your personal assistant for managing\nclients, projects, and payments.',
+                        'المساعد الشخصي لإدارة\nالعملاء والمشاريع والمدفوعات',
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.white.withOpacity(0.5),

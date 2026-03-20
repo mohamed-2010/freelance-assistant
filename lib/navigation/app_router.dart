@@ -13,6 +13,7 @@ import '../features/payments/payments_list_screen.dart';
 import '../features/payments/payment_form_screen.dart';
 import '../features/invoices/invoices_list_screen.dart';
 import '../features/invoices/invoice_create_screen.dart';
+import '../features/invoices/invoice_detail_screen.dart';
 import '../features/reports/reports_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../widgets/shell_scaffold.dart';
@@ -38,6 +39,12 @@ final appRouter = GoRouter(
           path: '/clients',
           pageBuilder: (context, state) => const NoTransitionPage(
             child: ClientsListScreen(),
+          ),
+        ),
+        GoRoute(
+          path: '/invoices',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: InvoicesListScreen(),
           ),
         ),
         GoRoute(
@@ -123,11 +130,22 @@ final appRouter = GoRouter(
         return PaymentFormScreen(clientId: clientId);
       },
     ),
+    GoRoute(
+      path: '/payments/edit',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) {
+        final paymentId = state.uri.queryParameters['id'];
+        final clientId = state.uri.queryParameters['clientId'];
+        return PaymentFormScreen(clientId: clientId, paymentId: paymentId);
+      },
+    ),
     // Invoice routes
     GoRoute(
-      path: '/invoices',
+      path: '/invoices/:id',
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => const InvoicesListScreen(),
+      builder: (context, state) => InvoiceDetailScreen(
+        invoiceId: state.pathParameters['id']!,
+      ),
     ),
     GoRoute(
       path: '/invoices/new',

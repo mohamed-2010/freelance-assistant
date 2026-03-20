@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../providers/providers.dart';
 import '../../theme/app_theme.dart';
+import '../../services/pdf_service.dart';
 
 class InvoiceCreateScreen extends ConsumerStatefulWidget {
   final String? clientId;
@@ -239,6 +241,19 @@ class _InvoiceCreateScreenState extends ConsumerState<InvoiceCreateScreen> {
               ),
             ],
           ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed:
+                  _selectedTaskIds.isEmpty ? null : () => _save(false, openPdf: true),
+              icon: const Icon(Icons.picture_as_pdf_rounded),
+              label: const Text('حفظ وتصدير PDF'),
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.deepOrange.shade700,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -265,7 +280,7 @@ class _InvoiceCreateScreenState extends ConsumerState<InvoiceCreateScreen> {
     );
   }
 
-  void _save(bool share) {
+  void _save(bool share, {bool openPdf = false}) async {
     final allTasks = ref.read(allTasksProvider);
     final subtotal = _selectedTaskIds
         .map((id) => allTasks.firstWhere((t) => t.id == id).cost)
@@ -309,9 +324,45 @@ ${_notesController.text.isNotEmpty ? '📝 ${_notesController.text}' : ''}
       Share.share(text);
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('✅ تم إنشاء الفاتورة')),
-    );
-    context.pop();
+    if (openPdf) {
+      final client = ref
+          .read(clientsProvider)
+          .firstWhere((c) => c.id == _selectedClientId);
+      final invoice = ref.read(allInvoicesProvider).last;
+      final invoiceTasks = _selectedTaskIds
+          .map((id) => allTasks.firstWhere((t) => t.id == id))
+          .toList();
+      final currency = ref.read(currencyProvider);
+
+      try {
+        final pdfBytes = await PdfService.generateInvoicePdf(
+          invoice: invoice,
+          client: client,
+          tasks: invoiceTasks,
+          currency: currency,
+        );
+
+        if (mounted) {
+          await Printing.sharePdf(
+            bytes: pdfBytes,
+            filename:
+                'فاتورة_${invoice.invoiceNumber}_${client.name}.pdf',
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('❌ فشل تصدير PDF: $e')),
+          );
+        }
+      }
+    }
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('✅ تم إنشاء الفاتورة')),
+      );
+      context.pop();
+    }
   }
 }

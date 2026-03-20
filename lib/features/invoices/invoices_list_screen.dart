@@ -102,7 +102,7 @@ class InvoicesListScreen extends ConsumerWidget {
                                 fontWeight: FontWeight.bold)),
                       ),
                       onTap: () {
-                        _showInvoiceActions(context, ref, inv);
+                        context.push('/invoices/${inv.id}');
                       },
                     ),
                   );
@@ -119,53 +119,4 @@ class InvoicesListScreen extends ConsumerWidget {
     );
   }
 
-  void _showInvoiceActions(
-      BuildContext context, WidgetRef ref, Invoice invoice) {
-    showModalBottomSheet(
-      context: context,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (invoice.status == 'draft')
-              ListTile(
-                leading: const Icon(Icons.send, color: Colors.blue),
-                title: const Text('تعليم كمُرسلة'),
-                onTap: () {
-                  ref.read(allInvoicesProvider.notifier).markAsSent(invoice);
-                  Navigator.pop(ctx);
-                },
-              ),
-            if (invoice.status != 'paid' && invoice.status != 'cancelled')
-              ListTile(
-                leading: const Icon(Icons.check_circle, color: Colors.green),
-                title: const Text('تعليم كمدفوعة'),
-                onTap: () {
-                  ref.read(allInvoicesProvider.notifier).markAsPaid(invoice);
-                  Navigator.pop(ctx);
-                },
-              ),
-            if (invoice.status != 'cancelled')
-              ListTile(
-                leading: const Icon(Icons.cancel, color: Colors.red),
-                title: const Text('إلغاء الفاتورة'),
-                onTap: () {
-                  final updated = invoice.copyWith(status: 'cancelled');
-                  ref.read(allInvoicesProvider.notifier).update(updated);
-                  Navigator.pop(ctx);
-                },
-              ),
-            ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: const Text('حذف'),
-              onTap: () {
-                ref.read(allInvoicesProvider.notifier).delete(invoice.id);
-                Navigator.pop(ctx);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

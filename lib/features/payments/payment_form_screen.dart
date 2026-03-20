@@ -8,8 +8,9 @@ import '../../theme/app_theme.dart';
 
 class PaymentFormScreen extends ConsumerStatefulWidget {
   final String? clientId;
+  final String? paymentId;
 
-  const PaymentFormScreen({super.key, this.clientId});
+  const PaymentFormScreen({super.key, this.clientId, this.paymentId});
 
   @override
   ConsumerState<PaymentFormScreen> createState() => _PaymentFormScreenState();
@@ -32,10 +33,28 @@ class _PaymentFormScreenState extends ConsumerState<PaymentFormScreen> {
     'other': '💳 أخرى',
   };
 
+  bool _isEdit = false;
+
   @override
   void initState() {
     super.initState();
     _selectedClientId = widget.clientId;
+
+    if (widget.paymentId != null) {
+      final payment = ref
+          .read(allPaymentsProvider)
+          .where((p) => p.id == widget.paymentId)
+          .firstOrNull;
+      if (payment != null) {
+        _isEdit = true;
+        _selectedClientId = payment.clientId;
+        _selectedProjectId = payment.projectId;
+        _amountController.text = payment.amount.toStringAsFixed(0);
+        _notesController.text = payment.notes;
+        _selectedDate = payment.date;
+        _selectedMethod = payment.method;
+      }
+    }
   }
 
   @override
@@ -57,7 +76,7 @@ class _PaymentFormScreenState extends ConsumerState<PaymentFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('تسجيل دفعة'),
+        title: Text(_isEdit ? 'تعديل دفعة' : 'تسجيل دفعة'),
         flexibleSpace: Container(
           decoration: BoxDecoration(gradient: AppTheme.primaryGradient),
         ),
@@ -179,7 +198,7 @@ class _PaymentFormScreenState extends ConsumerState<PaymentFormScreen> {
             FilledButton.icon(
               onPressed: _save,
               icon: const Icon(Icons.save),
-              label: const Text('حفظ الدفعة'),
+              label: Text(_isEdit ? 'حفظ التعديلات' : 'حفظ الدفعة'),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
@@ -193,17 +212,33 @@ class _PaymentFormScreenState extends ConsumerState<PaymentFormScreen> {
   void _save() {
     if (!_formKey.currentState!.validate()) return;
 
-    ref.read(allPaymentsProvider.notifier).add(
-          clientId: _selectedClientId!,
-          projectId: _selectedProjectId,
-          amount: double.parse(_amountController.text),
-          date: _selectedDate,
-          method: _selectedMethod,
-          notes: _notesController.text,
-        );
+    if (_isEdit && widget.paymentId != null) {
+      final existing = ref
+          .read(allPaymentsProvider)
+          .where((p) => p.id == widget.paymentId)
+          .first;
+      final updated = existing.copyWith(
+        clientId: _selectedClientId!,
+        projectId: _selectedProjectId,
+        amount: double.parse(_amountController.text),
+        date: _selectedDate,
+        method: _selectedMethod,
+        notes: _notesController.text,
+      );
+      ref.read(allPaymentsProvider.notifier).update(updated);
+    } else {
+      ref.read(allPaymentsProvider.notifier).add(
+            clientId: _selectedClientId!,
+            projectId: _selectedProjectId,
+            amount: double.parse(_amountController.text),
+            date: _selectedDate,
+            method: _selectedMethod,
+            notes: _notesController.text,
+          );
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('✅ تم تسجيل الدفعة بنجاح')),
+      SnackBar(content: Text(_isEdit ? '✅ تم تعديل الدفعة بنجاح' : '✅ تم تسجيل الدفعة بنجاح')),
     );
     context.pop();
   }

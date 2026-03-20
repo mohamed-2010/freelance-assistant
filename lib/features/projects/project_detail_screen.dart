@@ -36,14 +36,14 @@ class ProjectDetailScreen extends ConsumerWidget {
       symbol: project.currency == 'EGP' ? 'EGP ' : '\$',
     );
     final totalCost = tasks.fold(0.0, (sum, t) => sum + t.cost);
-    final totalPaid = tasks
-        .where((t) => t.status == 'paid')
+    final totalDelivered = tasks
+        .where((t) => t.status == 'delivered')
         .fold(0.0, (sum, t) => sum + t.cost);
-    final totalInvoiced = tasks
-        .where((t) => t.status == 'invoiced')
+    final totalDone = tasks
+        .where((t) => t.status == 'done' || t.status == 'review')
         .fold(0.0, (sum, t) => sum + t.cost);
     final totalPending = tasks
-        .where((t) => t.status == 'pending')
+        .where((t) => t.status == 'pending' || t.status == 'in_progress')
         .fold(0.0, (sum, t) => sum + t.cost);
 
     return Scaffold(
@@ -144,13 +144,13 @@ class ProjectDetailScreen extends ConsumerWidget {
                           'Total', fmt.format(totalCost), Colors.white),
                       _divider(),
                       _financialItem(
-                          'Paid', fmt.format(totalPaid), AppTheme.paid),
+                          'Delivered', fmt.format(totalDelivered), AppTheme.paid),
                     ],
                   ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      _financialItem('Invoiced', fmt.format(totalInvoiced),
+                      _financialItem('Done/Review', fmt.format(totalDone),
                           AppTheme.invoiced),
                       _divider(),
                       _financialItem('Pending', fmt.format(totalPending),

@@ -9,9 +9,10 @@ class ShellScaffold extends StatelessWidget {
   static int _currentIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
     if (location.startsWith('/clients')) return 1;
-    if (location.startsWith('/payments')) return 2;
-    if (location.startsWith('/reports')) return 3;
-    if (location.startsWith('/settings')) return 4;
+    if (location.startsWith('/invoices')) return 2;
+    if (location.startsWith('/payments')) return 3;
+    if (location.startsWith('/reports')) return 4;
+    if (location.startsWith('/settings')) return 5;
     return 0;
   }
 
@@ -30,12 +31,15 @@ class ShellScaffold extends StatelessWidget {
               context.go('/clients');
               break;
             case 2:
-              context.go('/payments');
+              context.go('/invoices');
               break;
             case 3:
-              context.go('/reports');
+              context.go('/payments');
               break;
             case 4:
+              context.go('/reports');
+              break;
+            case 5:
               context.go('/settings');
               break;
           }
@@ -44,27 +48,32 @@ class ShellScaffold extends StatelessWidget {
           NavigationDestination(
             icon: Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard_rounded),
-            label: 'Dashboard',
+            label: 'الرئيسية',
           ),
           NavigationDestination(
             icon: Icon(Icons.people_outline_rounded),
             selectedIcon: Icon(Icons.people_rounded),
-            label: 'Clients',
+            label: 'العملاء',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.receipt_long_outlined),
+            selectedIcon: Icon(Icons.receipt_long_rounded),
+            label: 'الفواتير',
           ),
           NavigationDestination(
             icon: Icon(Icons.payments_outlined),
             selectedIcon: Icon(Icons.payments_rounded),
-            label: 'Payments',
+            label: 'المدفوعات',
           ),
           NavigationDestination(
             icon: Icon(Icons.analytics_outlined),
             selectedIcon: Icon(Icons.analytics_rounded),
-            label: 'Reports',
+            label: 'التقارير',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings_outlined),
             selectedIcon: Icon(Icons.settings_rounded),
-            label: 'Settings',
+            label: 'الإعدادات',
           ),
         ],
       ),

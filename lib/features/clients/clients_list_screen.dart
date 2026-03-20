@@ -15,7 +15,8 @@ class ClientsListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final clients = ref.watch(clientsProvider);
     final projects = ref.watch(allProjectsProvider);
-    final tasks = ref.watch(allTasksProvider);
+    final invoices = ref.watch(allInvoicesProvider);
+    final payments = ref.watch(allPaymentsProvider);
     final currency = ref.watch(currencyProvider);
     final fmt =
         NumberFormat.currency(symbol: currency == 'EGP' ? 'EGP ' : '\$');
@@ -64,12 +65,14 @@ class ClientsListScreen extends ConsumerWidget {
                   final client = clients[index];
                   final clientProjects =
                       projects.where((p) => p.clientId == client.id).toList();
-                  final clientTasks = tasks.where((t) {
-                    return clientProjects.any((p) => p.id == t.projectId);
-                  }).toList();
-                  final unpaid = clientTasks
-                      .where((t) => t.status != 'paid')
-                      .fold(0.0, (sum, t) => sum + t.cost);
+                  final totalBilled = invoices
+                      .where((i) =>
+                          i.clientId == client.id && i.status != 'cancelled')
+                      .fold(0.0, (sum, i) => sum + i.total);
+                  final totalPaid = payments
+                      .where((p) => p.clientId == client.id)
+                      .fold(0.0, (sum, p) => sum + p.amount);
+                  final balance = totalBilled - totalPaid;
                   final activeCount =
                       clientProjects.where((p) => p.status == 'active').length;
 
@@ -120,11 +123,17 @@ class ClientsListScreen extends ConsumerWidget {
                               '$activeCount project${activeCount != 1 ? 's' : ''}',
                             ),
                             const SizedBox(width: 12),
-                            if (unpaid > 0)
+                            if (balance > 0)
                               _miniStat(
                                 Icons.account_balance_wallet_outlined,
-                                fmt.format(unpaid),
+                                fmt.format(balance),
                                 color: AppTheme.warning,
+                              ),
+                            if (balance < 0)
+                              _miniStat(
+                                Icons.account_balance_wallet_outlined,
+                                '${fmt.format(balance.abs())} زيادة',
+                                color: AppTheme.paid,
                               ),
                           ],
                         ),

@@ -7,6 +7,7 @@ import '../../providers/providers.dart';
 import '../../models/payment.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/confirm_dialog.dart';
 
 class PaymentsListScreen extends ConsumerWidget {
   const PaymentsListScreen({super.key});
@@ -85,6 +86,14 @@ class PaymentsListScreen extends ConsumerWidget {
                       padding: const EdgeInsets.only(right: 20),
                       child: const Icon(Icons.delete, color: Colors.white),
                     ),
+                    confirmDismiss: (direction) async {
+                      return await ConfirmDialog.show(
+                        context,
+                        title: 'حذف الدفعة',
+                        message:
+                            'هل تريد حذف دفعة ${fmt.format(p.amount)} $currency؟',
+                      );
+                    },
                     onDismissed: (_) {
                       ref.read(allPaymentsProvider.notifier).delete(p.id);
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -95,6 +104,7 @@ class PaymentsListScreen extends ConsumerWidget {
                       margin: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 4),
                       child: ListTile(
+                        onTap: () => context.push('/payments/edit?id=${p.id}&clientId=${p.clientId}'),
                         leading: CircleAvatar(
                           backgroundColor: Colors.green.withValues(alpha: 0.2),
                           child:
